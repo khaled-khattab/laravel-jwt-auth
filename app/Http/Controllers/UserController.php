@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use JWTAuth;
 
 class UserController extends Controller
 {
@@ -19,6 +20,7 @@ class UserController extends Controller
                 return response()->json($validator->errors(), 400);
             $request['password'] = bcrypt($request['password']);
             $user = User::create($request->all());
+            $user['token'] = JWTAuth::fromUser($user);
             return response()->json($user, 201);
         } catch (\Exception $e){
             return response()->json([
