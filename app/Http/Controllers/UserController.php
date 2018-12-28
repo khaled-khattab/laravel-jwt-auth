@@ -30,4 +30,29 @@ class UserController extends Controller
             ], 500);
         }
     }
+    public function login(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                "email"=> "required|email",
+                "password"=> "required|string"
+            ]);
+            if($validator->fails())
+                return response()->json($validator->errors(), 400);
+            $credentials = $request->only('email', 'password');
+            try {
+                if (! $token = JWTAuth::attempt($credentials)) {
+                    return response()->json(['error' => 'invalid_credentials'], 401);
+                }
+            } catch (JWTException $e) {
+                return response()->json(['error' => 'could_not_create_token'], 500);
+            }
+            return response()->json(['token'=> $token], 200);
+        } catch (\Exception $e){
+            return response()->json([
+                "message"=> $e->getMessage(),
+                "line"=> $e->getLine(),
+                "file"=> $e->getFile(),
+            ], 500);
+        }
+    }
 }
