@@ -16,10 +16,12 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::prefix('user')->group(function (){
-    Route::post('register', 'UserController@register');
-    Route::post('login', 'UserController@login');
-    Route::middleware('jwt.auth')->group(function (){
-        Route::post('me', 'UserController@me');
+Route::group(['middleware' => 'cors'], function(){
+    Route::prefix('user')->group(function (){
+        Route::post('register', 'UserController@register');
+        Route::post('login', 'UserController@login');
+        Route::middleware('jwt.auth')->group(function (){
+            Route::post('me', 'UserController@me');
+        });
     });
 });
