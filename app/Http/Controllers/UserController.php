@@ -12,9 +12,9 @@ class UserController extends Controller
     public function register(Request $request){
         try{
             $validator = Validator::make($request->all(), [
-                "name"=> "required|string",
+                "name"=> "required|string|min:5",
                 "email"=> "required|email|unique:users",
-                "password"=> "required|string"
+                "password"=> "required|string|min:6|confirmed"
             ]);
             if($validator->fails())
                 return response()->json($validator->errors(), 400);
