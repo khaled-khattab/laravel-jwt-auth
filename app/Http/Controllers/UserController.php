@@ -58,4 +58,18 @@ class UserController extends Controller
     public function me(Request $request){
         return auth()->user();
     }
+    public function logout()
+    {
+        try{
+            JWTAuth::parseToken()->invalidate();
+            auth()->logout();
+            return response()->json(['message' => 'Successfully logged out'], 200);
+        } catch (\Exception $e){
+            return response()->json([
+                "message"=> $e->getMessage(),
+                "line"=> $e->getLine(),
+                "file"=> $e->getFile(),
+            ], 500);
+        }
+    }
 }

@@ -22,6 +22,7 @@ Route::group(['middleware' => 'cors'], function(){
         Route::post('login', 'UserController@login');
         Route::middleware('jwt.auth')->group(function (){
             Route::post('me', 'UserController@me');
+            Route::post('logout', 'UserController@logout');
         });
     });
 });
