@@ -20,6 +20,7 @@ Route::group(['middleware' => 'cors'], function(){
     Route::prefix('user')->group(function (){
         Route::post('register', 'UserController@register');
         Route::post('login', 'UserController@login');
+        Route::post('send-password-reset-link', 'UserController@send_password_reset_link');
         Route::middleware('jwt.auth')->group(function (){
             Route::post('me', 'UserController@me');
             Route::post('logout', 'UserController@logout');
