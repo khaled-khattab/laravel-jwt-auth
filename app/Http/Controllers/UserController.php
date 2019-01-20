@@ -74,25 +74,4 @@ class UserController extends Controller
             ], 500);
         }
     }
-    public function send_password_reset_link(Request $request){
-        try{
-            if(!self::validate_email($request['email'])){
-                return response()->json(['error'=> 'Sent email doesn\'t exists'], 403);
-            }
-            self::send_email($request['email']);
-            return response()->json(['message'=> 'please check your email account'], 200);
-        } catch (\Exception $e){
-            return response()->json([
-                "message"=> $e->getMessage(),
-                "line"=> $e->getLine(),
-                "file"=> $e->getFile(),
-            ], 500);
-        }
-    }
-    public static function validate_email($email){
-        return !!User::where('email', $email)->first();
-    }
-    public static function send_email($email){
-        Mail::to($email)->send(new ResetPassword());
-    }
 }
