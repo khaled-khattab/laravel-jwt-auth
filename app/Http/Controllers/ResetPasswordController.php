@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPassword;
 
@@ -28,7 +30,24 @@ class ResetPasswordController extends Controller
         return !!User::where('email', $email)->first();
     }
     public function send_email($email){
-        Mail::to($email)->send(new ResetPassword());
+        $token = $this->create_token($email);
+        Mail::to($email)->send(new ResetPassword($token));
+    }
+    public function create_token($email){
+        $old_token = DB::table('password_resets')->where('email', $email)->first();
+        if($old_token){
+            return ((array)$old_token)['token'];
+        }
+        $token = str_random(60);
+        $this->save_token($token, $email);
+        return $token;
+    }
+    public function save_token($token, $email){
+        DB::table('password_resets')->insert([
+            'email'=> $email,
+            'token'=> $token,
+            'created_at'=> Carbon::now()
+        ]);
     }
 
 }
